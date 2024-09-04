@@ -1,0 +1,96 @@
+version: '3.8'
+services:
+  users:
+    build: ./users
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
+    ports:
+      - "8001:8001"
+
+    container_name: usersAPI
+    # volumes:
+    #   - ./users:/app
+    volumes:
+      - /media/taha/C80AF6B80AF6A31C/FullStack-Django-Developer/courseCode/Dj-Projects/job-board/src/users:/app
+
+    environment:
+      - USERS_DB_NAME=users
+      - USERS_DB_USER=postgres
+      - USERS_DB_PASSWORD=postgres
+      - USERS_DB_HOST=usersDB
+
+    depends_on:
+      - usersDB
+
+
+  jobs:
+    build: ./jobs
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8002"
+    ports:
+      - "8002:8002"
+
+    container_name: jobsAPI
+    volumes:
+      - ./jobs:/app
+    environment:
+      - JOBS_DB_NAME=jobs
+      - JOBS_DB_USER=postgres
+      - JOBS_DB_PASSWORD=postgres
+      - JOBS_DB_HOST=jobsDB
+    depends_on:
+      - jobsDB
+
+
+  blog:
+    build: ./blog
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8003"
+    ports:
+      - "8003:8003"
+
+    container_name: blogAPI
+    volumes:
+      - ./blog:/app
+    environment:
+      - BLOG_DB_NAME=blog
+      - BLOG_DB_USER=postgres
+      - BLOG_DB_PASSWORD=postgres
+      - BLOG_DB_HOST=blogDB
+    depends_on:
+      - blogDB
+
+
+  usersDB:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=users
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+   
+    volumes: 
+      - users-data:/var/lib/postgresql/data
+
+
+
+  jobsDB:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=jobs
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    
+    volumes: 
+      - jobs-data:/var/lib/postgresql/data
+
+
+  blogDB:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=blog
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+    volumes: 
+      - blog-data:/var/lib/postgresql/data
+volumes:
+  users-data:
+  jobs-data:
+  blog-data:
