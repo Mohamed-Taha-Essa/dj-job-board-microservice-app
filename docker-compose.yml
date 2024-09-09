@@ -7,10 +7,10 @@ services:
       - "8001:8001"
 
     container_name: usersAPI
-    # volumes:
-    #   - ./users:/app
     volumes:
-      - /media/taha/C80AF6B80AF6A31C/FullStack-Django-Developer/courseCode/Dj-Projects/job-board/src/users:/app
+      - ./users:/app
+    # volumes:
+    #   - /media/taha/C80AF6B80AF6A31C/FullStack-Django-Developer/courseCode/Dj-Projects/job-board/src/users:/app
 
     environment:
       - USERS_DB_NAME=users
