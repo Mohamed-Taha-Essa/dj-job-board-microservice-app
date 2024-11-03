@@ -18,8 +18,7 @@ class Post(models.Model):
     def __str__(self):
         return self.title
     
-    def get_user_data(self):
-        return super().get_user_data(self.author_id)
+    
 
 class PostLikes(models.Model):
     post = models.ForeignKey(Post , related_name='post_likes',on_delete=models.CASCADE)
@@ -40,5 +39,5 @@ class Comment(models.Model):
     def __str__(self):
         return str(self.post)
     
-    def get_user_data(self):
-        return super().get_user_data(self.user_id)
+    # def get_user_data(self):
+    #     return super().get_user_data(self.user_id)

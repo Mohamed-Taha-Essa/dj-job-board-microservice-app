@@ -147,7 +147,7 @@ class UserProfileAPI(APIView):
     def get(self,request,*args,**kwargs):
         user = request.user 
         serializer = CustomUserSerializer(user)
-        print(serializer.data)
+    
         return Response(serializer.data , status=status.HTTP_200_OK)
     
     
@@ -155,4 +155,3 @@ class UserProfileAPI(APIView):
 class UserDetailAPI(generics.RetrieveAPIView):
     queryset = user.objects.all()
     serializer_class = CustomUserSerializer
-    lookup_fields = 'id'

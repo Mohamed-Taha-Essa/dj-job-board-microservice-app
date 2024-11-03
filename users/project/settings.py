@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+# from dotenv import load_dotenv
+# import os
+
+# load_dotenv()  # Load environment variables from the .env file
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,12 +30,13 @@ SECRET_KEY = 'django-insecure-+84a3e3&&siez(ntxv@t8=328!7)b25z*6s#5@y_jh2pi3i1r1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -44,7 +50,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'rest_framework.authtoken',
     
-    'accounts',
+    
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -106,6 +112,16 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get("USERS_DB_NAME"), 
+#         'USER': os.environ.get("USERS_DB_USER"), 
+#         'PASSWORD': os.environ.get("USERS_DB_PASSWORD"), 
+#         'HOST': os.environ.get("USERS_DB_HOST", "localhost"), 
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
