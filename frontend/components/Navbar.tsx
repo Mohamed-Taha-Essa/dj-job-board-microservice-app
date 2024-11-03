@@ -33,9 +33,7 @@ function Navbar(){
                     <Link className='mx-3' href='/blog'>blog  </Link> 
                </div>
                 
-                <Link href='/'>
-                    <span>About</span>
-                </Link>
+               
 
                 <div className="flex">
                     <Button className="mr-2">
@@ -66,7 +64,7 @@ function Navbar(){
                                 <DropdownMenuItem>Billing</DropdownMenuItem>
                                 <DropdownMenuItem>Team</DropdownMenuItem>
                                 <DropdownMenuItem>Subscription</DropdownMenuItem>
-                                
+
                             </DropdownMenuContent>
                         </DropdownMenu>
 
