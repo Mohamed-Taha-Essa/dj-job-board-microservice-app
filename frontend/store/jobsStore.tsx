@@ -1,12 +1,11 @@
 
 import {create} from 'zustand'
-//http://localhost:8002/jobs/?keyword=&job_type=&education=PHD&experience=&min_salary=&max_salary=&date=
 const useJobStor= create((set)=>({
     min_salary :'',
     max_salary : '',
     keyword :'' ,
-    fromDate :'' ,
-    toDate :'',
+    from_date :'' ,
+    to_date :'',
     job_type:[],
     experience :[],
     education :[],
