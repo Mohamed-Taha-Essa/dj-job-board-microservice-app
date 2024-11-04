@@ -10,7 +10,7 @@ from post.models import  Post , PostLikes , Comment
 def generate_fake_posts(num=10):
     fake = Faker()
     for _ in range(num):
-        title = fake.job()
+        title = fake.job()[:110] # Truncate title to 120 characters
         Post.objects.create(
             title = title,
             content = fake.paragraph(nb_sentences=10),

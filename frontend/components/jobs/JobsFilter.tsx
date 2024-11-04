@@ -130,6 +130,8 @@ function JobsFilter(){
                         
                    </div>
                 </div>
+                <Button className="mt-4 w-full">Apply Filter</Button>
+                <Button className="mt-2 w-full" variant='outline'>Apply Filter</Button>
 
             </form>
             
