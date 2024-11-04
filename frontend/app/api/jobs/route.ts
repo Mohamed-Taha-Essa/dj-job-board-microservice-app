@@ -8,39 +8,52 @@ import { NextResponse } from "next/server";
 export async function GET(request:Request ) {
     
     try {
-        const {searchParams} = new URL(request.url)
+        // const {searchParams} = new URL(request.url)
 
-        const page = searchParams.get('page')||1
+        // const page = searchParams.get('page')||1
 
-        //get all filter
-        const min_salary = searchParams.get('min_salary')||'';
-        const max_salary = searchParams.get('max_salary')||'';
-        const keyword = searchParams.get('keyword')||'';
-        const from_date = searchParams.get('from_date')||'';
-        const to_date = searchParams.get('to_date')||'';
-        const job_type = searchParams.get('job_type')||'';
-        const experience = searchParams.get('experience')||'';
-        const education = searchParams.get('education')||'';
+        // //get all filter
+        // const min_salary = searchParams.get('min_salary')||'';
+        // const max_salary = searchParams.get('max_salary')||'';
+        // const keyword = searchParams.get('keyword')||'';
+        // const from_date = searchParams.get('from_date')||'';
+        // const to_date = searchParams.get('to_date')||'';
+        // const job_type = searchParams.get('job_type')||'';
+        // const experience = searchParams.get('experience')||'';
+        // const education = searchParams.get('education')||'';
 
-        const params = new URLSearchParams({
+        // const params = new URLSearchParams({
 
-            min_salary  ,
-            max_salary ,
-            keyword   , 
-            job_type ,
-            experience  ,
-            education  ,
-            from_date   ,
-            to_date  ,
-        })
-        console.log('-----------------------------------------------------------------')
-        const response = await fetch(`http://localhost:8002/jobs/?${params.toString()}`)
-        console.log(`http://localhost:8002/jobs/?${params.toString()}`)
+        //     min_salary  ,
+        //     max_salary ,
+        //     keyword   , 
+        //     job_type ,
+        //     experience  ,
+        //     education  ,
+        //     from_date   ,
+        //     to_date  ,
+        // })
+        // console.log('-----------------------------------------------------------------')
+        // const response = await fetch(`http://localhost:8002/jobs/?${params.toString()}`)
+        // console.log(`http://localhost:8002/jobs/?${params.toString()}`)
 
-        const data = await response.json()
-        console.log(data)
-        return NextResponse.json(data)
+        // const data = await response.json()
+        // console.log(data)
+        // return NextResponse.json(data)
 
+    const params = new URL(request.url).searchParams;
+    console.log('----------------------------')
+    console.log(params)
+    console.log('----------------------------')
+
+    const response = await fetch(`http://localhost:8002/jobs/?${params}`);
+    console.log(response)
+    if (!response.ok) {
+        return NextResponse.json({ error: 'Failed to fetch data' }, { status: response.status });
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
     } catch (error) {
         console.log(error)
     }
