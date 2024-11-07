@@ -20,16 +20,9 @@ class JobFilter(filters.FilterSet):
     keyword = filters.CharFilter(field_name='title', lookup_expr='icontains')
     min_salary = filters.NumberFilter(field_name='salary', lookup_expr='gte')
     max_salary = filters.NumberFilter(field_name='salary', lookup_expr='lte')
-    # date = filters.DateFromToRangeFilter(field_name='created_at')
-    # date = filters.DateFilter(field_name='created_at' ,lookup_expr='range')
+    
     date = filters.DateTimeFromToRangeFilter(field_name='created_at')
 
-    
-
-    # Multiple value filters
-    # job_type = filters.MultipleChoiceFilter(choices=JOB_TYPE)
-    # education = filters.MultipleChoiceFilter(choices=EDUCATION_TYPE)
-    # experience = filters.MultipleChoiceFilter(choices=EXPERIENCE_TYPE)
     job_type = filters.CharFilter(method='filter_by_job_type')
     education = filters.CharFilter(method='filter_by_education')
     experience = filters.CharFilter(method='filter_by_experience')
