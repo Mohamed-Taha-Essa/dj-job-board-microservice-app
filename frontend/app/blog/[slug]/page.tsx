@@ -1,9 +1,11 @@
+//to show one post detail 
+import PostDetail from "@/components/blog/PostDetail"
 function PostDetailPage(){
 
 
     return(
         <div>
-            <h1> PostDetailPage </h1>
+            <PostDetail/>
         </div>
     )
 }

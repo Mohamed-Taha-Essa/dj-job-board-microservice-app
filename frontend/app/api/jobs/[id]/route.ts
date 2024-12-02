@@ -1,0 +1,1 @@
+// external api :server componeent to get one job detail
