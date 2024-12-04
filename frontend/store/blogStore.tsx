@@ -12,7 +12,7 @@ interface Post {
   publish_date: string;
   likes_count:number;
   comments_count :number;
-
+  comment_post :Comment[];
   slug: string;
   author_id: number;
 }
@@ -51,7 +51,17 @@ interface PostStore {
 
 const usePostStore = create<PostStore>((set) => ({
   posts: [],
-  currentPost: {}as Post,
+  currentPost: {
+    id: 0,
+    title: '',
+    content: '',
+    publish_date: '',
+    likes_count: 0,
+    comments_count: 0,
+    comment_post: [], // Default empty array
+    slug: '',
+    author_id: 0,
+  },
   comments: [],
   likes: [],
   nextPage:0 ,

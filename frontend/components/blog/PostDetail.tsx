@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-
+import { Input } from "@/components/ui/input"
 
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -56,11 +56,47 @@ const PostDetail = () => {
                        
                     </CardContent>
 
-                    <CardFooter className="flex justify-between">
+                    <CardFooter className="flex ">
                         <span> ❤️  {currentPost.likes_count}</span>
                         <span className='ml-2'> 💬 {currentPost.comments_count}</span>
                     </CardFooter>
                 </Card>
+
+                <div className='mt-8'>
+                    <Input type="text" placeholder="add your comment" />
+                    <Button className='mt-2'>Add Comment</Button>
+                </div>
+
+               
+                {currentPost.comment_post.length > 0 ? currentPost.comment_post.map((comment)=>(
+                      <Card key={comment.id} className='mt-2'>
+                      <CardHeader>
+
+                          <CardTitle>{comment.user_id}</CardTitle>
+                          <CardDescription>
+                             <span className="text-sm text-gray-500">
+                                      Published: {new Date(comment.comment_date).toLocaleDateString()}
+                              </span>
+                          </CardDescription>
+
+                      </CardHeader>
+
+                      <CardContent>
+                          
+                          <div><span> {comment.content}</span></div>
+                          
+                          
+                      </CardContent>
+
+                      <CardFooter className="flex ">
+                          {/* <span> ❤️  {currentPost.likes_count}</span>
+                          <span className='ml-2'> 💬 {currentPost.comments_count}</span> */}
+                      </CardFooter>
+                      </Card>
+
+                )) :(  <p>No comments yet. Be the first to comment!</p>)}
+
+                
 
             </div>
         
