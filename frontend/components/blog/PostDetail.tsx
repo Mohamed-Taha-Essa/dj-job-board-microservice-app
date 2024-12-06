@@ -19,20 +19,30 @@ import { useEffect, useState } from 'react';
 
 
 const PostDetail = () => {
-  const {currentPost,fetchPostById ,addComment} =usePostStore()
+  const {currentPost,fetchPostById ,addComment ,setPostLike} =usePostStore()
   const params = useParams(); // Get the post ID from the URL
   const id = params.slug.toString()
 
   const [post, setPost] = useState(null);
-  
   const [error, setError] = useState(null);
-  const commentContent = '';
-  const handlerComment=()=>{
-    addComment(Number(id) ,commentContent )
+  const [liked,setLiked]=useState(false);
+  const [comment ,setComment] = useState('')
+  const n = currentPost.comments_count
+  const [commentCount ,setCommentCount] =useState(n)
+
+  console.log('currentPost.comments_count',currentPost.comments_count)
+  async function handleComment(){
+    addComment(currentPost.id,comment )
+    setComment('')
+    currentPost.comments_count = currentPost.comment_post.length
   }
+
   useEffect(() => {
     if (id) {
       fetchPostById(Number(id));
+      setCommentCount(currentPost.comments_count)
+
+    
     }
   }, [id]);
 
@@ -70,11 +80,12 @@ const PostDetail = () => {
                 {/* Add Comment Section */}
                 <div className='mt-8'>
                     <Input type="text" placeholder="add your comment" 
-                    name="commentContent"
-                    value={newComment}
-                    onChange={(e)=> setFilters('keyword' ,e.target.value)}
+                    value={comment}
+                    onChange={(e)=> setComment(e.target.value)}
                     />
-                    <Button className='mt-2'>Add Comment</Button>
+                    <Button className='mt-2'
+                    onClick={handleComment}
+                    >Add Comment</Button>
                 </div>
 
                {/* Comment Section */}

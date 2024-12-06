@@ -5,7 +5,7 @@ const BACKEND_URL = 'http://127.0.0.1:8003/api/posts'
 
 export async function POST(request:Request) {
 
-    const {post_id ,user_id} =await request.json()
+    const {post_id ,user_id} =await request.json()//receive from internal api(blog store) then send to backend
 
     const response = await fetch(`${BACKEND_URL}/add-like` ,
         {

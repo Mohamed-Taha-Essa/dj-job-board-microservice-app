@@ -2,13 +2,13 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8003/api/posts/';
+const API_BASE_URL = 'http://localhost:8003/api/posts';
 // call outside api from drf to get the determind post by id 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
 
   try {
-    const response = await fetch(`${API_BASE_URL}${id}`);
+    const response = await fetch(`${API_BASE_URL}/${id}`);
     if (!response.ok) {
       return NextResponse.json({ error: 'Failed to fetch data' }, { status: response.status });
     }
@@ -23,17 +23,20 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // call outside api to add comment and return newcomment 
-export async function POST(request: Request) {
+export async function POST(request: Request , {params}:{params:{id:string}}) {
   try {
     // Extract the request body
-    const { postId, content} = await request.json();
-
+    const { user_id, content} = await request.json();
+    const {id} = params;
     // Make a POST request using axios
-    const response = await axios.post(API_BASE_URL, {
-      post: postId,
+    const response = await axios.post(`${API_BASE_URL}/add-comment`, {
+      post: id,
+      user_id:user_id,
       content: content,
       
     });
+
+    console.log(response.data)
 
     // Return the response from the external API
     return NextResponse.json(response.data, { status: 201 });

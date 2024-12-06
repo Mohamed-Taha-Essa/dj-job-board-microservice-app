@@ -47,8 +47,7 @@ interface PostStore {
   fetchComments: (postId: number) => void;
   addComment: (postId: number, content: string) => void;
   
-  fetchLikes: (postId: number) => void;
-  toggleLike: (postId: number, userId: number) => void;
+setPostLike: (postId: number) => void;
 }
 
 const usePostStore = create<PostStore>((set) => ({
@@ -109,11 +108,12 @@ const usePostStore = create<PostStore>((set) => ({
 ////////////////////////////////////////////////////////////////////////
   addComment: async (postId, content) => {   // userId
     try {
-      const response = await axios.post(`${NEXT_API_URL}/${postId}`, {
+      const response = await axios.post(`/api/blog/${postId}`, {
         post: postId,
         content,
-        // user_id: userId,
+        user_id: 1,
       });
+
       const newComment = response.data
       set((state) => {
         const post = state.currentPost
@@ -121,7 +121,7 @@ const usePostStore = create<PostStore>((set) => ({
           currentPost:{
               ...post,
               comment_post:[...post.comment_post ,newComment]
-          }
+          },
         }
       });
     } catch (error) {
@@ -129,40 +129,26 @@ const usePostStore = create<PostStore>((set) => ({
     }
   },
 
-  fetchLikes: async (postId) => {
+setPostLike: async (postId ) => {
+    // try {
+    //   const response = await axios.get(`api/blog/like`, { params: { post: postId } });
+    //   set({ likes: response.data.likes_count });
+    // } catch (error) {
+    //   console.error('Failed to fetch likes:', error);
+    // }
     try {
-      const response = await axios.get(`api/blog/like`, { params: { post: postId } });
-      set({ likes: response.data.likes_count });
+      const response = await fetch('api/blog/like',
+        {
+          method:'POST' ,
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body : JSON.stringify({post:postId , user_id :1})
+
+        }
+      )
     } catch (error) {
-      console.error('Failed to fetch likes:', error);
-    }
-  },
-
-
-  toggleLike: async (postId, userId) => {
-    try {
-      const existingLike = await axios.get(`${API_BASE_URL}/post-likes/`, {
-        params: { post: postId, user_id: userId },
-      });
-
-      if (existingLike.data.length) {
-        // Unlike if the like already exists
-        await axios.delete(`${API_BASE_URL}/post-likes/${existingLike.data[0].id}/`);
-        set((state) => ({
-          likes: state.likes.filter((like) => like.id !== existingLike.data[0].id),
-        }));
-      } else {
-        // Add a like
-        const response = await axios.post(`${API_BASE_URL}/post-likes/`, {
-          post: postId,
-          user_id: userId,
-        });
-        set((state) => ({
-          likes: [...state.likes, response.data],
-        }));
-      }
-    } catch (error) {
-      console.error('Failed to toggle like:', error);
+      console.log(error)
     }
   },
 }));
