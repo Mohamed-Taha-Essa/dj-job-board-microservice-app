@@ -19,13 +19,17 @@ import { useEffect, useState } from 'react';
 
 
 const PostDetail = () => {
-  const {currentPost,fetchPostById} =usePostStore()
+  const {currentPost,fetchPostById ,addComment} =usePostStore()
   const params = useParams(); // Get the post ID from the URL
   const id = params.slug.toString()
+
   const [post, setPost] = useState(null);
   
   const [error, setError] = useState(null);
-
+  const commentContent = '';
+  const handlerComment=()=>{
+    addComment(Number(id) ,commentContent )
+  }
   useEffect(() => {
     if (id) {
       fetchPostById(Number(id));
@@ -38,6 +42,7 @@ const PostDetail = () => {
   return (
    
      <div className="container mx-auto px-4 py-8" >
+        {/* show post Section  */}
                 <Card >
                     <CardHeader>
 
@@ -62,37 +67,37 @@ const PostDetail = () => {
                     </CardFooter>
                 </Card>
 
+                {/* Add Comment Section */}
                 <div className='mt-8'>
-                    <Input type="text" placeholder="add your comment" />
+                    <Input type="text" placeholder="add your comment" 
+                    name="commentContent"
+                    value={newComment}
+                    onChange={(e)=> setFilters('keyword' ,e.target.value)}
+                    />
                     <Button className='mt-2'>Add Comment</Button>
                 </div>
 
-               
+               {/* Comment Section */}
                 {currentPost.comment_post.length > 0 ? currentPost.comment_post.map((comment)=>(
-                      <Card key={comment.id} className='mt-2'>
-                      <CardHeader>
+                    <Card key={comment.id} className='mt-2'>
+                        <CardHeader>
+                            <CardTitle>{comment.user_id}</CardTitle>
+                            <CardDescription>
+                                <span className="text-sm text-gray-500">
+                                        Published: {new Date(comment.comment_date).toLocaleDateString()}
+                                </span>
+                            </CardDescription>
+                        </CardHeader>
 
-                          <CardTitle>{comment.user_id}</CardTitle>
-                          <CardDescription>
-                             <span className="text-sm text-gray-500">
-                                      Published: {new Date(comment.comment_date).toLocaleDateString()}
-                              </span>
-                          </CardDescription>
+                        <CardContent>  
+                            <div><span> {comment.content}</span></div>
+                        </CardContent>
 
-                      </CardHeader>
-
-                      <CardContent>
-                          
-                          <div><span> {comment.content}</span></div>
-                          
-                          
-                      </CardContent>
-
-                      <CardFooter className="flex ">
-                          {/* <span> ❤️  {currentPost.likes_count}</span>
-                          <span className='ml-2'> 💬 {currentPost.comments_count}</span> */}
-                      </CardFooter>
-                      </Card>
+                        <CardFooter className="flex ">
+                            {/* <span> ❤️  {currentPost.likes_count}</span>
+                            <span className='ml-2'> 💬 {currentPost.comments_count}</span> */}
+                        </CardFooter>
+                    </Card>
 
                 )) :(  <p>No comments yet. Be the first to comment!</p>)}
 

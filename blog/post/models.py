@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
-
 class Post(models.Model):
     title = models.CharField(max_length=120)
     content = models.TextField(max_length=20000)

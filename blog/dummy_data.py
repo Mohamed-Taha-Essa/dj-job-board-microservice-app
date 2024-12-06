@@ -6,6 +6,10 @@ import random
 from faker import Faker
 from post.models import  Post , PostLikes , Comment
 
+from django.utils.timezone import make_aware
+from datetime import datetime, timedelta
+start_date = datetime.now() - timedelta(days=30)  # 30 days ago
+end_date = datetime.now()
 
 def generate_fake_posts(num=10):
     fake = Faker()
@@ -14,7 +18,7 @@ def generate_fake_posts(num=10):
         Post.objects.create(
             title = title,
             content = fake.paragraph(nb_sentences=10),
-            publish_date = fake.date() , 
+        publish_date=make_aware(fake.date_time_between(start_date=start_date, end_date=end_date)),
             author_id = random.randint(1,20)
         )
         
@@ -36,7 +40,8 @@ def generate_fake_comments(num=10):
             user_id = random.randint(1,100),
             post = random.choice(posts),
             content = fake.text(),
-            comment_date = fake.date()
+            comment_date =make_aware(fake.date_time_between(start_date=start_date, end_date=end_date))
+
         )
 
 

@@ -2,6 +2,7 @@
 
 import {create} from 'zustand';
 import axios from 'axios';
+import { comment } from 'postcss';
 
 const NEXT_API_URL = 'api/blog/'; // Update with your backend API
 
@@ -44,7 +45,8 @@ interface PostStore {
   fetchPosts: (page: number) => void;
   fetchPostById :(postId:number)=>void;
   fetchComments: (postId: number) => void;
-  addComment: (postId: number, content: string, userId: number) => void;
+  addComment: (postId: number, content: string) => void;
+  
   fetchLikes: (postId: number) => void;
   toggleLike: (postId: number, userId: number) => void;
 }
@@ -97,7 +99,7 @@ const usePostStore = create<PostStore>((set) => ({
 
   fetchComments: async (postId) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/${postId}`, { params: { post: postId } });
+      const response = await axios.get(`${NEXT_API_URL}/${postId}`, { params: { post: postId } });
       const comments = response.data.comment_post
       set({ comments: comments });
     } catch (error) {
@@ -105,16 +107,23 @@ const usePostStore = create<PostStore>((set) => ({
     }
   },
 ////////////////////////////////////////////////////////////////////////
-  addComment: async (postId, content, userId) => {
+  addComment: async (postId, content) => {   // userId
     try {
-      const response = await axios.post(`${API_BASE_URL}/comments/`, {
+      const response = await axios.post(`${NEXT_API_URL}/${postId}`, {
         post: postId,
         content,
-        user_id: userId,
+        // user_id: userId,
       });
-      set((state) => ({
-        comments: [...state.comments, response.data],
-      }));
+      const newComment = response.data
+      set((state) => {
+        const post = state.currentPost
+        return{
+          currentPost:{
+              ...post,
+              comment_post:[...post.comment_post ,newComment]
+          }
+        }
+      });
     } catch (error) {
       console.error('Failed to add comment:', error);
     }
@@ -122,7 +131,7 @@ const usePostStore = create<PostStore>((set) => ({
 
   fetchLikes: async (postId) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/${postId}`, { params: { post: postId } });
+      const response = await axios.get(`api/blog/like`, { params: { post: postId } });
       set({ likes: response.data.likes_count });
     } catch (error) {
       console.error('Failed to fetch likes:', error);
