@@ -30,7 +30,11 @@ const PostDetail = () => {
   const n = currentPost.comments_count
   const [commentCount ,setCommentCount] =useState(n)
 
-  console.log('currentPost.comments_count',currentPost.comments_count)
+  async function handleLike() {
+    setPostLike(currentPost.id)
+    setLiked(true)
+  }
+
   async function handleComment(){
     addComment(currentPost.id,comment )
     setComment('')
@@ -57,9 +61,17 @@ const PostDetail = () => {
                     <CardHeader>
 
                         <CardTitle>{currentPost.title}</CardTitle>
-                        <CardDescription> <span className="text-sm text-gray-500">
-                                    Published: {new Date(currentPost.publish_date).toLocaleDateString()}
-                                        </span>
+                        <CardDescription> 
+                            <div>
+                                <span> 🖋️ {currentPost.author_id}</span>
+                                <span className="text-sm text-gray-500 ml-2">
+                                📅   Published: {new Date(currentPost.publish_date).toLocaleDateString()}
+                                </span>
+                                <span className='ml-2'> ❤️  {currentPost.likes_count}</span>
+                                <span className='ml-2'> 💬 {currentPost.comments_count}</span>
+                            </div>
+                            
+
                         </CardDescription>
 
                     </CardHeader>
@@ -72,8 +84,11 @@ const PostDetail = () => {
                     </CardContent>
 
                     <CardFooter className="flex ">
-                        <span> ❤️  {currentPost.likes_count}</span>
-                        <span className='ml-2'> 💬 {currentPost.comments_count}</span>
+                        <Button variant='outline' onClick={handleLike}>
+                        {(liked) ? '👎' : '👍'}
+
+                        
+                        </Button>
                     </CardFooter>
                 </Card>
 
@@ -105,8 +120,6 @@ const PostDetail = () => {
                         </CardContent>
 
                         <CardFooter className="flex ">
-                            {/* <span> ❤️  {currentPost.likes_count}</span>
-                            <span className='ml-2'> 💬 {currentPost.comments_count}</span> */}
                         </CardFooter>
                     </Card>
 
