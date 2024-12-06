@@ -27,8 +27,10 @@ const PostDetail = () => {
   const [error, setError] = useState(null);
   const [liked,setLiked]=useState(false);
   const [comment ,setComment] = useState('')
+  const [comments, setComments] = useState([]); // Local state for comments
+
   const n = currentPost.comments_count
-  const [commentCount ,setCommentCount] =useState(n)
+  const [commentsCount ,setCommentsCount] =useState(0)
 
   async function handleLike() {
     setPostLike(currentPost.id)
@@ -37,18 +39,21 @@ const PostDetail = () => {
 
   async function handleComment(){
     addComment(currentPost.id,comment )
-    setComment('')
-    currentPost.comments_count = currentPost.comment_post.length
+    // handle comments count
+    if(comment.length > 0){
+        setCommentsCount(commentsCount + 1);
+    }
+
+    // Clear the comment input
+    setComment("");
   }
 
   useEffect(() => {
     if (id) {
       fetchPostById(Number(id));
-      setCommentCount(currentPost.comments_count)
-
-    
-    }
-  }, [id]);
+      setCommentsCount(currentPost.comments_count || 0)
+    } 
+  }, [id, fetchPostById, currentPost]);
 
 
   if (error) return <div>{error}</div>;
@@ -68,7 +73,7 @@ const PostDetail = () => {
                                 📅   Published: {new Date(currentPost.publish_date).toLocaleDateString()}
                                 </span>
                                 <span className='ml-2'> ❤️  {currentPost.likes_count}</span>
-                                <span className='ml-2'> 💬 {currentPost.comments_count}</span>
+                                <span className='ml-2'> 💬 {commentsCount}</span>
                             </div>
                             
 
