@@ -96,6 +96,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
  }
+
 # DB connect with docker
 # DATABASES = {
 #     'default': {

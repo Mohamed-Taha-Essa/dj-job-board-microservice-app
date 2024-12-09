@@ -1,11 +1,11 @@
 
-
+import JobDetail from "@/components/jobs/jobDetail"
 function JobDetailPage(){
 
 
     return(
         <div>
-            <h1> JobDetailPage </h1>
+            <JobDetail/>
         </div>
     )
 }

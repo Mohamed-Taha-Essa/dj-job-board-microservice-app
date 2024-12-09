@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import useJobStor from "@/store/jobsStore"
+import Link from "next/link"
 import { useState } from "react"
 import useSWR from 'swr';
 
@@ -64,7 +65,8 @@ function JobsList(){
                             
                         </CardContent>
                         <CardFooter className="flex justify-between">
-                            <Button variant="outline">Read more </Button>
+                        <Button variant="outline">  <Link href={`/jobs/${job.id}`}>Read more </Link></Button>
+
                         </CardFooter>
                     </Card>
                 ))}

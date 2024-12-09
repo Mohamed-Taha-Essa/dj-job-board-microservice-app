@@ -1,17 +1,20 @@
--  jobs:
+# Todo 
+
+## jobs
+
     - add pagination
     - add new job
     - apply on job
+    - jon detail
 
-blog :
+## blog :
+
     - list ,detail
-    - like 
-    - comment 
-    - pagination 
+    - like
+    - comment
+    - pagination
 
+## user :
 
-user :
-    - auth 
+    - auth
     - microservices
-
-     
