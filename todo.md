@@ -5,11 +5,10 @@
     - add pagination
     - add new job
     - apply on job
-    - jon detail
+    - job detail
 
 ## blog :
 
-    - list ,detail
     - like
     - comment
     - pagination

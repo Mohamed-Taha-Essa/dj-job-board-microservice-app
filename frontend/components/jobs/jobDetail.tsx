@@ -11,11 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
+import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import useJobStor from '@/store/jobsStore';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
 
 
 const JobDetail = () => {
@@ -49,15 +50,15 @@ const JobDetail = () => {
                         <CardTitle>{currentJob.title}</CardTitle>
                         <CardDescription> 
                             <div>
-                                <span> 🖋️ {currentJob.education}</span>
+                                <span> 🎓 {currentJob.education}</span>
                                 <span className="text-sm text-gray-500 ml-2">
                                 📅   Published: {new Date(currentJob.created_at).toLocaleDateString()}
                                 </span>
-                                <span className='ml-2'> ❤️  {currentJob.job_type}</span>
-                                <span className='ml-2'> 💬 {currentJob.experience}</span>
-                                <span className='ml-2'> 💬 {currentJob.salary}</span>
-                                <span className='ml-2'> 💬 {currentJob.position}</span>
-                                <span className='ml-2'> 💬 {currentJob.company}</span>
+                                <span className='ml-2'> ⏱{currentJob.job_type}</span>
+                                <span className='ml-2'> 📝{currentJob.experience}</span>
+                                <span className='ml-2'>  {currentJob.salary}💲</span>
+                                <span className='ml-2'> 💻  {currentJob.position}</span>
+                                <span className='ml-2'> 🏢 {currentJob.company}</span>
                             </div>
                             
 
@@ -71,15 +72,21 @@ const JobDetail = () => {
                         
                        
                     </CardContent>
-
                     <CardFooter className="flex ">
-                        <Button variant='outline' >
-                       
-
-                        
-                        </Button>
+                  
                     </CardFooter>
-                </Card>
+                    </Card>
+
+                    <div className='mt-8'>
+                    <Textarea placeholder="Type your cover letter here." />
+                        
+                        <Button className='mt-2'
+                        
+                        >Apply on job </Button>
+                </div>
+
+                    
+               
 
               
 

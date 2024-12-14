@@ -1,6 +1,6 @@
 //components to show all posts
 "use client"
-import { useEffect } from 'react';
+import { useEffect ,useState } from 'react';
 import usePostStore from '@/store/blogStore';
 import { Button } from "@/components/ui/button"
 import {
@@ -11,13 +11,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+
 import Link from 'next/link';
+
+
 const PostList = () => {
-  const { posts, fetchPosts } = usePostStore();
+  const { posts, fetchPosts,totalPages } = usePostStore();
+
+  const [page ,setPage] = useState(1)
 
   useEffect(() => {
-    fetchPosts(1); // Fetch the first page of posts on component mount
-  }, [fetchPosts]);
+    fetchPosts(page); // Fetch the first page of posts on component mount
+  }, [fetchPosts,page]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  }
+  // Helper to calculate the range of pages to display
+  const getVisiblePages = (currentPage, total) => {
+    const pages = [];
+    if (currentPage > 1) pages.push(currentPage - 1); // Previous page
+    pages.push(currentPage); // Current page
+    if (currentPage < total) pages.push(currentPage + 1); // Next page
+    return pages;
+  };
+  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -28,36 +57,90 @@ const PostList = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post) => (
-            <div >
-                <Card key={post.id} >
-                    <CardHeader>
-
-                        <CardTitle>{post.title}</CardTitle>
-                        <CardDescription> <span className="text-sm text-gray-500">
-                                    Published: {new Date(post.publish_date).toLocaleDateString()}
-                                        </span>
-                        </CardDescription>
-
-                    </CardHeader>
-
-                    <CardContent>
-                        <span> ❤️  {post.likes_count}</span>
-                        <span className='ml-2'> 💬 {post.comments_count}</span>
-                        <div><span> {post.content.split(' ').slice(0, 5).join(' ')}...</span></div>
-                        
-                       
-                    </CardContent>
-
-                    <CardFooter className="flex justify-between">
-                            <Button variant="outline">  <Link href={`/blog/${post.id}`}>Read more </Link></Button>
-                    </CardFooter>
-                </Card>
-
-            </div>
-        
+            <Card key={post.id}>
+              <CardHeader>
+                <CardTitle>{post.title}</CardTitle>
+                <CardDescription>
+                  <span className="text-sm text-gray-500">
+                    Published: {new Date(post.publish_date).toLocaleDateString()}
+                  </span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <span>❤️ {post.likes_count}</span>
+                <span className="ml-2">💬 {post.comments_count}</span>
+                <div>
+                  <span>{post.content.split(" ").slice(0, 5).join(" ")}...</span>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <Button variant="outline">
+                  <Link href={`/blog/${post.id}`}>Read more</Link>
+                </Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
       )}
+
+      <div className="my-10">
+        {/* Pagination */}
+        <Pagination>
+          <PaginationContent>
+            {/* Previous Button */}
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page - 1);
+                }}
+              />
+            </PaginationItem>
+
+            {/* Ellipsis for pages before the visible range */}
+            {page > 2 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            {/* Page Numbers */}
+            {getVisiblePages(page, totalPages).map((pageNum) => (
+              <PaginationItem key={pageNum}>
+                <PaginationLink
+                  href="#"
+                  isActive={pageNum === page}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageChange(pageNum);
+                  }}
+                >
+                  {pageNum}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            {/* Ellipsis for pages after the visible range */}
+            {page < totalPages - 1 && (
+              <PaginationItem>
+                <PaginationEllipsis />
+              </PaginationItem>
+            )}
+
+            {/* Next Button */}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handlePageChange(page + 1);
+                }}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
     </div>
   );
 };

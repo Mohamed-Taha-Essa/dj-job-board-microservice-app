@@ -70,7 +70,7 @@ const usePostStore = create<PostStore>((set) => ({
   currentPage: 1,
   totalPages: 1,
 
-  fetchPosts: async (page = 1) => {
+  fetchPosts: async (page ) => {
     try {
         const response = await axios.get(`${NEXT_API_URL}?page=${page}`); 
       set({
