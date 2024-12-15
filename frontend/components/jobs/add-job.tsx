@@ -19,7 +19,7 @@ const AddJobForm = () => {
     salary: "",
     position: "",
     due_date: null,
-    user: "",
+    user: 1,
     company: "",
   });
 
@@ -56,7 +56,7 @@ const AddJobForm = () => {
           salary: "",
           position: "",
           due_date: null,
-          user: "",
+          user: '',
           company: "",
         });
       } else {
@@ -176,7 +176,7 @@ const AddJobForm = () => {
         )}
       </div>
 
-      {/* User */}
+      {/* User
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">User</label>
         <Input
@@ -187,7 +187,7 @@ const AddJobForm = () => {
           placeholder="Enter user ID"
           required
         />
-      </div>
+      </div> */}
 
       {/* Company */}
       <div className="mb-4">

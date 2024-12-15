@@ -66,7 +66,7 @@ const JobDetail = () => {
                 // Show error notification with error.message
             }
             
-            // const response = await axios.post('/api/jobs/apply-job', {
+             // const response = await axios.post('/api/jobs/apply-job', {
             //     jobId: currentJob?.id,
             //     coverLetter,
             // }, {
