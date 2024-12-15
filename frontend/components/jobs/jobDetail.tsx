@@ -24,11 +24,11 @@ const JobDetail = () => {
     const {fetchJobById ,currentJob} = useJobStor()
 
     const params = useParams(); // Get the post ID from the URL
-    console.log(params)
     const id = params.id.toString()
-    console.log(id)
-    
+
     const [error, setError] = useState(null);
+    const [isApply, setIsApply] = useState(false);
+    const [coverLetter, setCoverLetter] = useState('');
 
     useEffect(()=>{
         if(id){
@@ -36,6 +36,61 @@ const JobDetail = () => {
         }
    
     },[id,fetchJobById])
+
+    const handleAplly = async() =>
+    {
+        if (!currentJob?.id || !coverLetter.trim()) {
+            // Show notification: "Job and cover letter are required."
+            return;
+        }
+    
+        setIsApply(true);
+    
+        try {
+            const response = await fetch('/api/jobs/apply', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jobId: currentJob?.id,
+                    coverLetter,
+                }),
+            });
+    
+            if (response.ok) {
+                setCoverLetter(''); // Clear input
+                // Show success notification
+            } else {
+                const error = await response.json();
+                // Show error notification with error.message
+            }
+            
+            // const response = await axios.post('/api/jobs/apply-job', {
+            //     jobId: currentJob?.id,
+            //     coverLetter,
+            // }, {
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            // });
+    
+            // if (response.status === 200 || response.status === 201) {
+            //     // Success notification
+            //     setCoverLetter('');
+            // } else {
+            //     // Handle unexpected status codes
+            //     console.error('Unexpected status code:', response.status);
+            //     // Show notification
+            // }
+        } catch (error) {
+            console.log('Error applying for job:', error);
+            // Show error notification
+        } finally {
+            setIsApply(false); // Reset loading state
+        }
+    }
+
 
     if (error) return <div> {error} </div>
     if (!currentJob) return <div>Loading...</div>; // Show loading state if `currentJob` is null
@@ -78,11 +133,16 @@ const JobDetail = () => {
                     </Card>
 
                     <div className='mt-8'>
-                    <Textarea placeholder="Type your cover letter here." />
+                    <Textarea 
+                    placeholder="Type your cover letter here." 
+                    value={coverLetter}
+                    onChange={(e)=>setCoverLetter(e.target.value)}
+                    />
                         
-                        <Button className='mt-2'
-                        
-                        >Apply on job </Button>
+                        <Button className='mt-2' onClick={handleAplly} disabled={isApply}>
+                            {(isApply) ?"Applying..." : "Apply"}
+                            
+                        </Button>
                 </div>
 
                     

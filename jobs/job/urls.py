@@ -5,7 +5,7 @@ urlpatterns = [
     path("", JobsListCreateAPI.as_view(), name="job_list"),
     path("<int:pk>", JobsDetailUpdateDeleteAPI.as_view(), name="job_detail"),
     
-    path("/job-apply", JobApply.as_view(), name="JobApply"),
+    path("job-apply", JobApply.as_view(), name="JobApply"),
 
 
 ]

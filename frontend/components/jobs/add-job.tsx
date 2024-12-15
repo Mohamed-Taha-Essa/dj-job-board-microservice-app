@@ -37,7 +37,7 @@ const AddJobForm = () => {
 
     // Ensure all fields are validated here before submitting to the backend
     try {
-      const response = await fetch("/api/jobs", {
+      const response = await fetch("/api/jobs/add-job", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
