@@ -1,10 +1,11 @@
-function ChangePasswordPage(){
+import { ChangePasswordForm } from "@/components/account/change-passowrd" 
 
-
-    return(
-        <div>
-            <h1> ChangePasswordPage </h1>
-        </div>
-    )
+export default function Page() {
+  return (
+    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-sm">
+         <ChangePasswordForm />
+      </div>
+    </div>
+  )
 }
-export default ChangePasswordPage
