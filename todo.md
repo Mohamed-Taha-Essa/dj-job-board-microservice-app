@@ -5,8 +5,8 @@
 
 blog :
     - list ,detail
-    - like 
-    - comment 
+    - like ----------->true
+    - comment -add comment true
     - pagination 
 
 
