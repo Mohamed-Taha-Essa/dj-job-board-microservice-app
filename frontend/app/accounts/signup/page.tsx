@@ -1,9 +1,12 @@
+import { SignupForm } from "@/components/account/signup-form"
 function SignUpPage(){
 
 
     return(
-        <div>
-            <h1> SignUpPage </h1>
+        <div className="container flex items-center justify-center min-h-screen">
+            <div className="w-full max-w-sm">
+                 <SignupForm/>
+            </div>
         </div>
     )
 }

@@ -23,7 +23,7 @@ def generate_fake_jobs(num=10):
             user = random.randint(1,20) , 
             company = fake.company()
         )
-        
+    print('jobs added sucessfully')
 
 
 generate_fake_jobs(60)
