@@ -5,7 +5,7 @@ function PostAddComment(){
 
     return(
         <div>
-            <h1> JobsFilter </h1>
+            <h1> PostAddComment </h1>
         </div>
     )
 }

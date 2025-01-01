@@ -114,6 +114,7 @@ class ResetPasswordAPI(APIView):
 
 class UserSignupAPI(APIView):
     permission_classes = [AllowAny]
+    serializer_class = UserSignupSerializer
     
     def post(self, request, *args, **kwargs):
         serializer = UserSignupSerializer(data=request.data)
@@ -134,7 +135,7 @@ class UserSignupAPI(APIView):
             })
             to_email = user.email
             send_mail(mail_subject, message, 'pythondeveloper6@gmail.com', [to_email])
-            
+           
             return Response({
                 'success': 'User was registered successfully. Please check your email to activate your account.'
             }, status=status.HTTP_201_CREATED)

@@ -1,3 +1,4 @@
+"use client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,11 +10,50 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useState } from "react"
+import { ToastContainer, toast } from 'react-toastify';
+import { useRouter } from "next/navigation"
 
-export function LoginForm({
+export default function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+
+  const [email ,setEmail] = useState('')
+  const [password ,setPassword] = useState('')
+
+  const router = useRouter()
+  const handleSubmit= async(e)=>{
+    e.preventDefault()  //stop refresh 
+
+    try {
+      const response = await fetch('/api/accounts/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email ,password 
+        }),
+
+    });
+    const {token , user} = await response.json()
+    //store data in localstorage
+    localStorage.setItem(token,token)
+    localStorage.setItem(user,JSON.stringify(user))
+
+    //show notification 
+    toast.success('successful login ')
+
+    //redirect to job 
+    router.push('/jobs')
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -24,15 +64,19 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+         
+          <form  onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  
                   id="email"
                   type="email"
                   placeholder="m@example.com"
                   required
+                  value={email}
+                  onChange={(e)=>{setEmail(e.target.value)}}
                 />
               </div>
               <div className="grid gap-2">
@@ -45,7 +89,11 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" 
+                 value={password}
+                 onChange={(e)=>{setPassword(e.target.value)}}
+                
+                required />
               </div>
               <Button type="submit" className="w-full">
                 Login
@@ -63,6 +111,7 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
+      <ToastContainer/>
     </div>
   )
 }

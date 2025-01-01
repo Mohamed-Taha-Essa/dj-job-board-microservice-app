@@ -26,3 +26,4 @@ class JobsDetailUpdateDeleteAPI(generics.RetrieveUpdateDestroyAPIView):
 class JobApply(generics.CreateAPIView):
     queryset =JobApply.objects.all()
     serializer_class = JobApplySerializer
+   

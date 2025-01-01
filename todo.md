@@ -7,7 +7,11 @@
     - apply on job
     - job detail
 
-## blog :
+blog :
+    - list ,detail
+    - like ----------->true
+    - comment -add comment true
+    - pagination 
 
     - like
     - comment

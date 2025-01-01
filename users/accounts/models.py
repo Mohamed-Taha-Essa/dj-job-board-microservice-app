@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser , BaseUserManager , PermissionsMixin
+from django.contrib.auth.models import AbstractUser , BaseUserManager , PermissionsMixin , Group, Permission
 from django.contrib.auth.hashers import make_password
 '''
     - user (fn,ln,email,password,username) + auth views + permissions + groups --> admin
@@ -40,6 +40,18 @@ class CustomUser(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='users/')
     
+    groups = models.ManyToManyField(
+        Group,
+        related_name="customuser_groups",  # Avoid clash with default User.groups
+        blank=True,
+        verbose_name="groups",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        related_name="customuser_permissions",  # Avoid clash with default User.user_permissions
+        blank=True,
+        verbose_name="user permissions",
+    )
     USERNAME_FIELD = 'email'   # login with email 
     REQUIRED_FIELDS = []
     
