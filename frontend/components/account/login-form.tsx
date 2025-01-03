@@ -39,14 +39,15 @@ export default function LoginForm({
     });
     const {token , user} = await response.json()
     //store data in localstorage
-    localStorage.setItem(token,token)
-    localStorage.setItem(user,JSON.stringify(user))
+    localStorage.setItem('token',token)
 
+    localStorage.setItem(user,JSON.stringify(user))
+    
     //show notification 
     toast.success('successful login ')
 
     //redirect to job 
-    router.push('/jobs')
+    router.push('/accounts/profile')
     } catch (error) {
       console.log(error)
     }

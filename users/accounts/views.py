@@ -47,16 +47,45 @@ class ChangePasswordAPI(APIView):
     def put(self,request):
         user = request.user
         data = request.data
-        
-        if not user.check_password(data.get('old_password')):
-            return Response({'message':'old password was wrong'},status=status.HTTP_400_BAD_REQUEST)
-        
-        # update password
-        user.set_password(data.get('new_password'))
-        user.save()
-        
-        # send email
-        return Response({'message':'password was changes successfully'},status=status.HTTP_200_OK)
+
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+
+        # Validate inputs
+        if not old_password or not new_password:
+            return Response(
+                {'message': 'Both old and new passwords are required.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # if len(new_password) < 8:
+        #     return Response(
+        #         {'message': 'New password must be at least 8 characters long.'},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
+
+        # Verify old password
+        if not user.check_password(old_password):
+            return Response(
+                {'message': 'Old password is incorrect.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Update password
+        try:
+            user.set_password(new_password)
+            user.save()
+
+            # Send a response
+            return Response(
+                {'message': 'Password has been changed successfully.'},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {'message': 'An error occurred while updating the password.', 'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class ResendActivationCodeAPI(APIView):
     permission_classes = [AllowAny]
@@ -143,16 +172,16 @@ class UserSignupAPI(APIView):
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProfileAPI(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     
     def get(self,request,*args,**kwargs):
         user = request.user 
-        serializer = CustomUserSerializer(user)
-    
+        serializer = CustomUserSerializer(user ,context={'request': request})
+        print('user========' ,user)
         return Response(serializer.data , status=status.HTTP_200_OK)
     
     
-    
+
 class UserDetailAPI(generics.RetrieveAPIView):
     queryset = user.objects.all()
     serializer_class = CustomUserSerializer

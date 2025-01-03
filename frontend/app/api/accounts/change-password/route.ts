@@ -1,52 +1,51 @@
-// external api :server componeent to get one job detailexport async function GET(request: Request, { params }: { params: { id: string } }) {
-    import { NextResponse } from 'next/server';
+// external api :to login
+import { NextResponse } from 'next/server';
+const BACKEN_URL = 'http://127.0.0.1:8001/accounts'
+export async function PUT(request: Request) {
+    try {
+        // Parse the incoming JSON data
+        const body = await request.json();
+        const { old_password,new_password } = body;
 
-    export async function POST(request: Request) {
-        try {
-            // Parse the incoming JSON data
-            const body = await request.json();
-            const { jobId, coverLetter } = body;
-            console.log('jobid =======' ,jobId)
-            console.log('coverLetter' ,coverLetter)
-
-    
-            // Validate request body
-            if (!jobId || !coverLetter) {
-                return NextResponse.json(
-                    { error: 'jobId and coverLetter are required' },
-                    { status: 400 }
-                );
-            }
-    
-            // Send data to the Django backend
-            const response = await fetch('http://127.0.0.1:8002/jobs/job-apply', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    job: jobId,
-                    cover_letter: coverLetter,
-                    user: 1, // Hardcoded for now; replace with dynamic user ID if available
-                }),
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                return NextResponse.json(data, { status: 201 }); // Success response
-            } else {
-                const error = await response.json();
-                return NextResponse.json(
-                    { error: 'Failed to apply', details: error },
-                    { status: response.status }
-                );
-            }
-        } catch (error) {
-            console.error('Error in API handler:', error);
+        const token = request.headers.get('Authorization')
+        if(!token){
+            return NextResponse.json({error :'you must login first'})
+        }
+        // Validate request body
+        if (!old_password || !new_password  ) {
             return NextResponse.json(
-                { error: 'Internal Server Error' },
-                { status: 500 }
+                { error: 'old_password and new_password are required' },
+                { status: 400 }
             );
         }
+
+        // Send data to the Django backend
+        const response = await fetch(`${BACKEN_URL}/change-password/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `token ${token}`
+            },
+            body: JSON.stringify({
+                old_password,new_password
+            }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            return NextResponse.json(data, { status: 200 }); // Success response
+        } else {
+            const error = await response.json();
+            return NextResponse.json(
+                { error: 'Failed to login', details: error },
+                { status: response.status }
+            );
+        }
+    } catch (error) {
+        console.error('Error in API handler:', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
     }
-    
+}

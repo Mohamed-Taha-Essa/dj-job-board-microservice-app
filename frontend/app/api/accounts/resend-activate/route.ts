@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         }
 
         // Send data to the Django backend
-        const response = await fetch(`${BACKEN_URL}/reset-password/`, {
+        const response = await fetch(`${BACKEN_URL}/resend-activation/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
