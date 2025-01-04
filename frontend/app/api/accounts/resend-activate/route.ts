@@ -5,10 +5,10 @@ export async function POST(request: Request) {
     try {
         // Parse the incoming JSON data
         const body = await request.json();
-        const { email, password } = body;
+        const { email } = body;
 
         // Validate request body
-        if (!email || !password) {
+        if (!email ) {
             return NextResponse.json(
                 { error: 'email and password are required' },
                 { status: 400 }
@@ -16,13 +16,13 @@ export async function POST(request: Request) {
         }
 
         // Send data to the Django backend
-        const response = await fetch(`${BACKEN_URL}/login/`, {
+        const response = await fetch(`${BACKEN_URL}/resend-activation/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username:email ,password
+                email 
             }),
         });
 

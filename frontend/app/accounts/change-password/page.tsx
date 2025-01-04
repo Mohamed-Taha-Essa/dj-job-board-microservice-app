@@ -1,5 +1,6 @@
-import { ChangePasswordForm } from "@/components/account/change-passowrd"
-function ChangePasswordPage(){
+import  ChangePasswordForm from "@/components/account/change-passowrd"
+
+export default function ChangePasswordPage(){
 
 
     return(
@@ -10,4 +11,3 @@ function ChangePasswordPage(){
         </div>
     )
 }
-export default ChangePasswordPage

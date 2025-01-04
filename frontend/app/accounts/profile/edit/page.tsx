@@ -1,35 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { CalendarIcon, EnvelopeClosedIcon, PersonIcon } from "@radix-ui/react-icons"
+import { CalendarIcon, CodeSandboxLogoIcon, EnvelopeClosedIcon, PersonIcon } from "@radix-ui/react-icons"
 
 interface UserProfile {
-  fullName: string;
   username: string;
   email: string;
-  joinDate: string;
+  date_joined: string;
   bio: string;
-  avatarUrl: string|File;
+  image_url: string|File;
   cv:null|File;
 
 }
 
 export default function EditProfilePage() {
   const [profile, setProfile] = useState<UserProfile>({
-    fullName: "John Doe",
-    username: "johndoe123",
-    email: "john.doe@example.com",
-    joinDate: "January 15, 2023",
-    bio: "Passionate software developer with 5 years of experience in web technologies. Love to create user-friendly and efficient applications.",
-    avatarUrl: "https://github.com/shadcn.png",
+    username: "",
+    email: "",
+    date_joined: "",
+    bio: "",
+    image_url: "" ,
     cv:null
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const token = localStorage.getItem("Authorization");
+        if (!token) {
+          throw new Error("you must login first");
+        }
+        const getResponse= await fetch("/api/accounts/profile",{
+          method: 'GET' ,
+          headers: { 'Authorization': `token ${token}`},    
+      } );
+        if (!getResponse.ok) {
+          throw new Error("Failed to fetch profile data");
+        }
+        const data = await getResponse.json();
+        console.log(data)
+        setProfile(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -49,8 +75,8 @@ export default function EditProfilePage() {
         <form onSubmit={handleSubmit}>
           <CardHeader className="flex flex-col items-center space-y-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={profile.avatarUrl} alt="User's avatar" />
-              <AvatarFallback>{profile.fullName.slice(0, 2).toUpperCase()}</AvatarFallback>
+              <AvatarImage src={profile.image_url} alt="User's avatar" />
+              <AvatarFallback>{profile.username.slice(0, 2).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="text-center">
               <CardTitle className="text-2xl font-bold">Edit Profile</CardTitle>
@@ -62,11 +88,11 @@ export default function EditProfilePage() {
               <h3 className="text-lg font-semibold">Personal Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="username">Full Name</Label>
                   <Input 
-                    id="fullName" 
-                    name="fullName"
-                    value={profile.fullName} 
+                    id="username" 
+                    name="username"
+                    value={profile.username} 
                     onChange={handleInputChange}
                   />
                 </div>
@@ -98,13 +124,13 @@ export default function EditProfilePage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="joinDate">Join Date</Label>
+                  <Label htmlFor="date_joined">Join Date</Label>
                   <div className="flex">
                     <CalendarIcon className="w-4 h-4 mr-2 mt-3" />
                     <Input 
-                      id="joinDate" 
-                      name="joinDate"
-                      value={profile.joinDate} 
+                      id="date_joined" 
+                      name="date_joined"
+                      value={profile.date_joined} 
                       readOnly 
                     />
                   </div>
@@ -128,7 +154,7 @@ export default function EditProfilePage() {
                     <div className='col-span-1 flex items-center'>
                     <Avatar className="w-16 h-16">
                         <AvatarImage src={profile.avatarUrl} alt="Current avatar" />
-                        <AvatarFallback>{profile.fullName.slice(0, 2).toUpperCase()}</AvatarFallback>
+                        <AvatarFallback>{profile.username.slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
                     </div>
                     <div className='col-span-7 flex items-center'>

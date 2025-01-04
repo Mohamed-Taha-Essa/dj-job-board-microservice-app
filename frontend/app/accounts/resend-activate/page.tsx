@@ -1,5 +1,5 @@
-import { ResendActivateForm } from "@/components/account/resend-activate-form"
-function ResendActivatePage(){
+import  ResendActivateForm  from "@/components/account/resend-activate-form"
+export default function ResendActivatePage(){
 
 
     return(
@@ -10,4 +10,3 @@ function ResendActivatePage(){
         </div>
     )
 }
-export default ResendActivatePage

@@ -9,4 +9,4 @@ class JobSerializer(serializers.ModelSerializer):
 class JobApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = JobApply
-        fields = '__all__'
+        fields = ['user' ,'cover_letter' ,'job']

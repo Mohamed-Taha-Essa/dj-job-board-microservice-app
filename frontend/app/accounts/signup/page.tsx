@@ -1,5 +1,5 @@
 import { SignupForm } from "@/components/account/signup-form"
-function SignUpPage(){
+export default function SignUpPage(){
 
 
     return(
@@ -10,4 +10,3 @@ function SignUpPage(){
         </div>
     )
 }
-export default SignUpPage

@@ -12,7 +12,7 @@ class UserSignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2')
+        fields = ['username', 'email', 'password', 'password2']
         extra_kwargs = {
             'email': {'required': True}
         }
@@ -31,8 +31,25 @@ class UserSignupSerializer(serializers.ModelSerializer):
         user.save()
         return user 
     
+# class CustomUserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User 
+#         # fields = '__all__'
+#         fields = ['id','username','email','image']
+from django.conf import settings
+from rest_framework import serializers
+
 class CustomUserSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
-        model = User 
-        # fields = '__all__'
-        fields = ['id','username','email','image']
+        model = User
+        fields = ['image', 'image_url', 'username', 'email' ,'date_joined']
+
+    def get_image_url(self, obj):
+        # Get the request context and build the full URL
+        request = self.context.get('request')
+        if request:
+            print('hellow')
+            return request.build_absolute_uri(settings.MEDIA_URL + str(obj.image.name))
+        return settings.MEDIA_URL + str(obj.image.name)

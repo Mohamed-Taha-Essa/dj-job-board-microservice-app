@@ -1,7 +1,11 @@
--  jobs:
+# Todo 
+
+## jobs
+
     - add pagination
     - add new job
     - apply on job
+    - job detail
 
 blog :
     - list ,detail
@@ -9,9 +13,11 @@ blog :
     - comment -add comment true
     - pagination 
 
+    - like
+    - comment
+    - pagination
 
-user :
-    - auth 
+## user :
+
+    - auth
     - microservices
-
-     

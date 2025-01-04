@@ -1,5 +1,7 @@
-import { LoginForm } from "@/components/account/login-form"
-function LogInPage(){
+
+import LoginForm from "@/components/account/login-form"
+
+export default function LogInPage(){
 
 
     return(
@@ -10,4 +12,3 @@ function LogInPage(){
         </div>
     )
 }
-export default LogInPage
