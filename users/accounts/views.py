@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMessage,EmailMultiAlternatives
 from django.utils.http import urlsafe_base64_decode , urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
@@ -17,6 +17,7 @@ from rest_framework.authtoken.models import Token
 from .serializers import UserSignupSerializer , CustomUserSerializer
 from django.core.files.storage import default_storage
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.utils.html import strip_tags
 
 user = get_user_model()  # get CustomUser
 
@@ -33,6 +34,7 @@ class UserLoginAPI(ObtainAuthToken):
             'email' : user.email ,
             'username' : user.username
         }
+        print(user_data)
         return Response({'token':token.key,'user':user_data},status=status.HTTP_200_OK)
 
 class UserLogoutAPI(APIView):
@@ -145,34 +147,42 @@ class ResetPasswordAPI(APIView):
 
 class UserSignupAPI(APIView):
     permission_classes = [AllowAny]
-    serializer_class = UserSignupSerializer
-    
+
     def post(self, request, *args, **kwargs):
         serializer = UserSignupSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             user = serializer.save()
             user.is_active = False
             user.save()
-            
             current_site = get_current_site(request)
             mail_subject = 'Activate Your Account'
-            
-            message = render_to_string('accounts/activate_email.html', {
+            html_message = render_to_string('accounts/activate_email.html',context={
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
-            to_email = user.email
-            send_mail(mail_subject, message, 'pythondeveloper6@gmail.com', [to_email])
+            plain_message = strip_tags(html_message)
            
+            to_email = user.email
+
+            # Using EmailMultiAlternatives to send HTML email
+            email = EmailMultiAlternatives(
+                subject=mail_subject,
+                body=plain_message,  # Fallback to plain text if needed
+                from_email='pythondeveloper6@gmail.com',
+                to=[to_email]
+            )
+            email.attach_alternative(html_message, "text/html")  # Attach HTML content
+            email.send()
+
             return Response({
                 'success': 'User was registered successfully. Please check your email to activate your account.'
             }, status=status.HTTP_201_CREATED)
 
         return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
+    
 class UserProfileAPI(APIView):
     permission_classes = [IsAuthenticated]
 

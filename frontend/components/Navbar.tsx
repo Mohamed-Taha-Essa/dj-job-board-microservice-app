@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link"
 import { ModeToggle } from "./DarkMode"
 import { Button } from "./ui/button"
@@ -11,11 +12,18 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { useEffect, useState } from "react";
   
 
 function Navbar(){
 
-   
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+      // Check localStorage/sessionStorage for auth token
+      const token = localStorage.getItem("Authontication"); // or sessionStorage
+      setIsLoggedIn(!!token); // Set true if token exists
+    }, []);
 
     return(
 
@@ -33,12 +41,19 @@ function Navbar(){
                </div>
                 <div className="flex">
                     <ModeToggle ></ModeToggle>
-                    <Button className="mr-2 ml-2"  variant='outline'>
-                        <Link href='/accounts/signup'> SignUp </Link>
-                    </Button>
-                    <Button className="mr-2">
-                        <Link href='/accounts/login'> Login </Link>
-                    </Button>
+                    {!isLoggedIn ? (
+                        <>
+                        <Button className="mr-2 ml-2" variant="outline">
+                            <Link href="/accounts/signup">SignUp</Link>
+                        </Button>
+                        <Button className="mr-2">
+                            <Link href="/accounts/login">Login</Link>
+                        </Button>
+                        </>
+                    ) : (
+                        <Button className="mr-2 ml-2" variant="outline">
+                        <Link href="/accounts/logout">Logout</Link>
+                        </Button>)}
                     <div className="ml-2">  
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

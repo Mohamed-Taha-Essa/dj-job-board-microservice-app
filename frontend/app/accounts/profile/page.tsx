@@ -18,7 +18,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const token = localStorage.getItem("Authorization");
+        const token = localStorage.getItem("token");
         console.log(localStorage)
         console.log(token)
         // if (!token) {

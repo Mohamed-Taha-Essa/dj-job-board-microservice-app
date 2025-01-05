@@ -44,14 +44,23 @@ export function SignupForm({
         }),
 
     });
-    const data = await response.json()
-    console.log(data)
-    
-    //show notification 
-    toast.success('successful signup check your email for activation')
+     if (response.ok) {
+          //show notification 
+          toast.success('successful signup check your email for activation')
 
+          router.push('/accounts/login')
+
+      } else {
+          const error = await response.json();
+          return( 
+            toast.error(error)
+
+          );
+      }
+   
+    
+    
     // //redirect to job 
-    // router.push('/jobs')
     } catch (error) {
       console.log(error)
     }
@@ -117,7 +126,7 @@ export function SignupForm({
                     
                   </div>
                   <Input id="password2" 
-                  type="password2" 
+                  type="password" 
                   required 
           
                   value={password2}
