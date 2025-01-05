@@ -9,7 +9,6 @@ export async function GET(request: Request) {
         
         if (tokenHeader && tokenHeader.startsWith('token ')) {
             token = tokenHeader.split(' ')[1]; // Extract the actual token
-            console.log(token); 
         } else {
             console.error('Authorization header is missing or malformed');
         }
@@ -25,7 +24,6 @@ export async function GET(request: Request) {
             },
         }
         );
-        console.log(response)
         if (response.ok) {
             const data = await response.json();
             console.log(data)
@@ -50,41 +48,49 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
     try {
-        // Parse the incoming JSON data
         const body = await request.json();
-        const { old_password,new_password } = body;
-
-        const token = request.headers.get('Authorization')
-        if(!token){
-            return NextResponse.json({error :'you must login first'})
+        console.log("==========================================",first_name , last_name ,username )
+        const tokenHeader = request.headers.get('Authorization');
+        
+        let token = null;
+        
+        if (tokenHeader && tokenHeader.startsWith('token ')) {
+            token = tokenHeader.split(' ')[1]; // Extract the actual token
+            console.log(token); 
+        } else {
+            console.error('Authorization header is missing or malformed');
         }
-        // Validate request body
-        if (!old_password || !new_password  ) {
+
+        console.log("==========================================",token)
+        if (!token) {
+            return NextResponse.json({ error: 'You must log in first' }, { status: 401 });
+        }
+        if (!body || typeof body !== 'object') {
             return NextResponse.json(
-                { error: 'old_password and new_password are required' },
+                { error: 'Request body must contain user data to update' },
                 { status: 400 }
             );
         }
 
         // Send data to the Django backend
-        const response = await fetch(`${BACKEN_URL}/change-password/`, {
+        const response = await fetch(`${BACKEN_URL}/profile/edit-profile/`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `token ${token}`
+            headers: {      
+                'Accept': 'application/json',  
+                'Content-Type': "multipart/form-data",
+                'Authorization': `token ${token}`,
             },
-            body: JSON.stringify({
-                old_password,new_password
-            }),
+            body:body 
         });
 
         if (response.ok) {
             const data = await response.json();
+            console.log(data)
             return NextResponse.json(data, { status: 200 }); // Success response
         } else {
             const error = await response.json();
             return NextResponse.json(
-                { error: 'Failed to login', details: error },
+                { error: 'Failed to update profile', details: error },
                 { status: response.status }
             );
         }
