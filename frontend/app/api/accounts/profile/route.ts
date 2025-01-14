@@ -6,9 +6,9 @@ export async function GET(request: Request) {
        
         const tokenHeader = request.headers.get('Authorization');
         let token = null;
+        
         if (tokenHeader && tokenHeader.startsWith('token ')) {
             token = tokenHeader.split(' ')[1]; // Extract the actual token
-            console.log(token); // Output: a9cf9f77a6874f6df201be139fc2b93bb8c11c4e
         } else {
             console.error('Authorization header is missing or malformed');
         }
@@ -24,7 +24,6 @@ export async function GET(request: Request) {
             },
         }
         );
-        console.log(response)
         if (response.ok) {
             const data = await response.json();
             console.log(data)
@@ -34,6 +33,62 @@ export async function GET(request: Request) {
             const error = await response.json();
             return NextResponse.json(
                 { error: 'Failed to get data', details: error },
+                { status: response.status }
+            );
+        }
+    } catch (error) {
+        console.error('Error in API handler:', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 }
+        );
+    }
+}
+
+
+export async function PUT(request: Request) {
+    try {
+        const body = await request.json();
+        const tokenHeader = request.headers.get('Authorization');
+        
+        let token = null;
+        
+        if (tokenHeader && tokenHeader.startsWith('token ')) {
+            token = tokenHeader.split(' ')[1]; // Extract the actual token
+            console.log(token); 
+        } else {
+            console.error('Authorization header is missing or malformed');
+        }
+
+        if (!token) {
+            return NextResponse.json({ error: 'You must log in first' }, { status: 401 });
+        }
+        if (!body || typeof body !== 'object') {
+            return NextResponse.json(
+                { error: 'Request body must contain user data to update' },
+                { status: 400 }
+            );
+        }
+
+        // Send data to the Django backend
+        const response = await fetch(`${BACKEN_URL}/profile/edit-profile/`, {
+            method: 'PUT',
+            headers: {      
+                'Accept': 'application/json',  
+                'Content-Type': "multipart/form-data",
+                'Authorization': `token ${token}`,
+            },
+            body:body 
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data)
+            return NextResponse.json(data, { status: 200 }); // Success response
+        } else {
+            const error = await response.json();
+            return NextResponse.json(
+                { error: 'Failed to update profile', details: error },
                 { status: response.status }
             );
         }

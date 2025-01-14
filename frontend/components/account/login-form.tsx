@@ -39,8 +39,12 @@ export default function LoginForm({
     });
     const {token , user} = await response.json()
     //store data in localstorage
-    localStorage.setItem('token',token)
+    //work on ubuntu
+    // localStorage.setItem('token',token)
+    
+    localStorage.setItem('Authorization',token)
 
+    console.log('token: ' ,token)
     localStorage.setItem(user,JSON.stringify(user))
     
     //show notification 
