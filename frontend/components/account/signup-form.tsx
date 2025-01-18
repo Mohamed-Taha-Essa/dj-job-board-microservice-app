@@ -23,16 +23,20 @@ export function SignupForm({
   const [password ,setPassword] = useState('')
   const [password2 ,setPassword2] = useState('')
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter()
   const handleSubmit= async(e)=>{
     e.preventDefault()  //stop refresh 
 
+      if (password !== password2) {
+        setError("Passwords do not match");
+        return;
+      }
     try {
-        if (password !== password2) {
-          setError("Passwords do not match");
-          return;
-        }
+    
+        
+        setLoading(true); // Show loading state
         setError("");
         const response = await fetch('/api/accounts/signup', {
         method: 'POST',
@@ -44,26 +48,19 @@ export function SignupForm({
         }),
 
     });
-     if (response.ok) {
-          //show notification 
-          toast.success('successful signup check your email for activation')
-
-          router.push('/accounts/login')
-
-      } else {
-          const error = await response.json();
-          return( 
-            toast.error(error)
-
-          );
-      }
-   
-    
-    
-    // //redirect to job 
-    } catch (error) {
-      console.log(error)
+    if (response.ok) {
+      toast.success("Signup successful! Check your email for activation.");
+      router.push("/accounts/login");
+    } else {
+      const errorData = await response.json();
+      toast.error(errorData.detail || "Signup failed. Please try again.");
     }
+  } catch (err) {
+    toast.error("An error occurred. Please try again.");
+    console.error(err);
+  } finally {
+    setLoading(false); // Hide loading state
+  }
 
   }
   return (

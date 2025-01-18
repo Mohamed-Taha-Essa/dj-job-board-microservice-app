@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'celery',
     'rest_framework',
     'django_filters',
     'drf_yasg',
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'accounts',
     
 ]
+
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -183,7 +184,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
+DEFAULT_FROM_EMAIL ='pythondevloper33@gmail.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'pythondevloper33@gmail.com'
@@ -191,3 +192,6 @@ EMAIL_HOST_PASSWORD = 'vhaupruhwjpvyqzs'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+# Celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379/0'

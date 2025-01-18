@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
-
 from django.utils.text import slugify
+from shared_utils.user_data_mixin import UserDataMixin
 
 JOB_TYPE = (
     ('Internship','Internship'),
@@ -24,7 +24,7 @@ EXPERIENCE_TYPE = (
 )
 
 # Create your models here.
-class Job(models.Model):
+class Job(models.Model  ,UserDataMixin):
     title = models.CharField(max_length=50)
   
     description =models.TextField(max_length=10000)
@@ -47,6 +47,8 @@ class Job(models.Model):
     def __str__(self):
         return self.title
     
+    def get_user_data(self):
+        return super().get_user_data(self.user)
 
 class JobApply(models.Model):
     user = models.IntegerField()

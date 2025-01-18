@@ -18,8 +18,10 @@ from .serializers import UserSignupSerializer , CustomUserSerializer
 from django.core.files.storage import default_storage
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils.html import strip_tags
+from .tasks import send_activation_email_task  # Import the task
 
 user = get_user_model()  # get CustomUser
+
 
 class UserLoginAPI(ObtainAuthToken):
     permission_classes = [AllowAny]
@@ -150,37 +152,23 @@ class UserSignupAPI(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserSignupSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = serializer.save()
-            user.is_active = False
-            user.save()
-            current_site = get_current_site(request)
-            mail_subject = 'Activate Your Account'
-            html_message = render_to_string('accounts/activate_email.html',context={
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            plain_message = strip_tags(html_message)
-           
-            to_email = user.email
+        if not serializer.is_valid():
+            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Using EmailMultiAlternatives to send HTML email
-            email = EmailMultiAlternatives(
-                subject=mail_subject,
-                body=plain_message,  # Fallback to plain text if needed
-                from_email='pythondeveloper6@gmail.com',
-                to=[to_email]
-            )
-            email.attach_alternative(html_message, "text/html")  # Attach HTML content
-            email.send()
+        user = serializer.save(is_active=False)
 
-            return Response({
-                'success': 'User was registered successfully. Please check your email to activate your account.'
-            }, status=status.HTTP_201_CREATED)
+        # Prepare data for the background task
+        current_site = get_current_site(request)
+        domain = current_site.domain
+        secure = request.is_secure()
 
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        # Call the Celery task for sending the email
+        send_activation_email_task.delay(user.pk, domain, secure)
+
+        return Response({
+            'success': 'User was registered successfully. Please check your email to activate your account.'
+        }, status=status.HTTP_201_CREATED)
+    
     
 class UserProfileAPI(APIView):
     permission_classes = [IsAuthenticated]
@@ -207,36 +195,9 @@ class UserUpdateProfileAPI(generics.UpdateAPIView):
     def perform_update(self, serializer):
         
         serializer.save()
-# class UserUpdateProfileAPI(APIView):
-#     """
-#     Custom API for updating user profile information.
-#     """
-#     permission_classes = [IsAuthenticated]
-       
-#     def put(self, request, *args, **kwargs):
-#         user = request.user  # Get the currently authenticated user
-#         file_obj = request.FILES.get('image')  # Get the uploaded file
-#         print(file_obj)
-#         if file_obj:
-#             # Save the file
-#             file_path = f'media/users/{file_obj.name}'
-            
-#         serializer = CustomUserSerializer(user, data=request.data, partial=False)  # Full update
-
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def patch(self, request, *args, **kwargs):
-#         user = request.user  # Get the currently authenticated user
-#         serializer = CustomUserSerializer(user, data=request.data, partial=True)  # Partial update
-
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)       
 
 class UserDetailAPI(generics.RetrieveAPIView):
+    permission_classes = [AllowAny]
+
     queryset = user.objects.all()
     serializer_class = CustomUserSerializer
