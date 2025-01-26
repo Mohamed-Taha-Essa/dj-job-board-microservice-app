@@ -61,9 +61,23 @@ const PostList = () => {
               <CardHeader>
                 <CardTitle>{post.title}</CardTitle>
                 <CardDescription>
-                  <span className="text-sm text-gray-500">
+                <div className="flex items-center gap-2 mt-2">
+                  {/* Show User Image if available */}
+                  {post.user.image && (
+                    <img 
+                      src={`${post.user.image}?${new Date().getTime()}`}
+                      alt={post.user.username} 
+                      className="w-8 h-8 rounded-full border border-gray-300"
+                    />
+                  )}
+                  <span className="text-sm text-gray-600">
+                    <span className="font-bold text-blue-600">{post.user.username}</span>
+                  </span>
+                </div>
+                 <span className="text-sm text-gray-500">
                     Published: {new Date(post.publish_date).toLocaleDateString()}
                   </span>
+                  
                 </CardDescription>
               </CardHeader>
               <CardContent>

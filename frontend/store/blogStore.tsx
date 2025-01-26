@@ -6,6 +6,14 @@ import { comment } from 'postcss';
 
 const NEXT_API_URL = 'api/blog/'; // Update with your backend API
 
+interface User {
+  image: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+  email: string;
+  date_joined: string;
+}
 interface Post {
   id: number;
   title: string;
@@ -16,8 +24,8 @@ interface Post {
   comment_post :Comment[];
   slug: string;
   author_id: number;
+  user:User
 }
-
 
 interface Comment {
   id: number;
@@ -25,12 +33,14 @@ interface Comment {
   content: string;
   comment_date: string;
   user_id: number;
+  user:User
 }
 
 interface PostLike {
   id: number;
   post: number;
   user_id: number;
+  user:User
 }
 
 interface PostStore {
@@ -62,6 +72,14 @@ const usePostStore = create<PostStore>((set) => ({
     comment_post: [], // Default empty array
     slug: '',
     author_id: 0,
+    user: {
+      image: '',
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+      date_joined: '',
+    }
   },
   comments: [],
   likes: [],
@@ -130,13 +148,8 @@ const usePostStore = create<PostStore>((set) => ({
   },
 
 setPostLike: async (postId ) => {
-    // try {
-    //   const response = await axios.get(`api/blog/like`, { params: { post: postId } });
-    //   set({ likes: response.data.likes_count });
-    // } catch (error) {
-    //   console.error('Failed to fetch likes:', error);
-    // }
-    try {
+   
+   try {
       const response = await fetch('api/blog/like',
         {
           method:'POST' ,

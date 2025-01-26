@@ -68,7 +68,7 @@ const PostDetail = () => {
                         <CardTitle>{currentPost.title}</CardTitle>
                         <CardDescription> 
                             <div>
-                                <span> 🖋️ {currentPost.author_id}</span>
+                                <span className="font-bold text-blue-600"> 🖋️ {currentPost.user.username}</span>
                                 <span className="text-sm text-gray-500 ml-2">
                                 📅   Published: {new Date(currentPost.publish_date).toLocaleDateString()}
                                 </span>
@@ -112,8 +112,21 @@ const PostDetail = () => {
                 {currentPost.comment_post.length > 0 ? currentPost.comment_post.map((comment)=>(
                     <Card key={comment.id} className='mt-2'>
                         <CardHeader>
-                            <CardTitle>{comment.user_id}</CardTitle>
+                            <CardTitle> 
+                            <div className="flex items-center gap-2 mt-2">
+                                <img 
+                            
+                                src={`${comment.user.image}?${new Date().getTime()}`}
+                                alt={comment.user.username} 
+                                className="w-8 h-8 rounded-full border border-gray-300"
+                                />
+                                <span className="text-sm text-gray-600">
+                                <span className="font-bold text-blue-600">{comment.user.username}</span>
+                                </span>
+                                </div>
+                        </CardTitle>
                             <CardDescription>
+                            
                                 <span className="text-sm text-gray-500">
                                         Published: {new Date(comment.comment_date).toLocaleDateString()}
                                 </span>
